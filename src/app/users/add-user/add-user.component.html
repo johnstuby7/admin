@@ -30,7 +30,7 @@
             </p>
             
             <p>
-                <button mat-raised-button color="primary">Submit</button>
+                <button mat-raised-button color="primary" [disabled]="!addUserForm.valid">Create User</button>
             </p>
         </form>
     </mat-card-content>

@@ -343,6 +343,13 @@
             return this.http.delete(this.baseUrl + 'users/' + id);
         }
 
+#21 Edit user:
+    ->In edit-user.component.ts this line: this.activatedRoute.params.subscribe(data => { will capture the data any time it changes
+
+Make sure to create a dataLoaded Boolean, that you can wrap forms in <div *ngIf="dataLoaded"> and have it defined in edit-user.components.ts. this will make sure that the data is availble before failing.
+
+Example of disabling form until it is valid: 
+    <button mat-raised-button color="primary" [disabled]="!addUserForm.valid">Create User</button>
 
 ActivatedRoute is used for routing for each component
 
@@ -351,3 +358,5 @@ this.router.navigate(['..', 'list']);
 
 Resources:
 material.angular.io
+https://www.youtube.com/watch?v=-e9Drok8eiA
+https://www.youtube.com/watch?v=oL0wcXKV8fI
