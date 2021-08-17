@@ -302,10 +302,52 @@
                 { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500} }
             ]
 
+#20 delete action:
+    -> update delete-user.component.ts
+        import { Component, OnInit } from '@angular/core';
+        import { MatSnackBar } from '@angular/material/snack-bar';
+        import { ActivatedRoute, Router } from '@angular/router';
+        import { UserService } from 'src/app/services/user.service';
+
+        @Component({
+        selector: 'app-delete-user',
+        templateUrl: './delete-user.component.html',
+        styleUrls: ['./delete-user.component.scss']
+        })
+        export class DeleteUserComponent implements OnInit {
+
+        userId: string = '';
+        constructor(private activatedRoute: ActivatedRoute, private userService: UserService,
+            private _snackBar: MatSnackBar,
+            private router: Router) { }
+
+        ngOnInit(): void {
+            this.activatedRoute.params.subscribe(data => {
+            this.userId = data.id;
+            });
+
+            if(this.userId){
+            this.userService.deleteUser(this.userId).subscribe(data => {
+                this._snackBar.open("User Deleted Successfully");
+                this.router.navigateByUrl('list')
+            }, err => {
+                this._snackBar.open("Unable to delete user");
+            })
+            }
+        }
+
+        }
+
+    -> update user.service.ts
+          deleteUser(id: any) {
+            return this.http.delete(this.baseUrl + 'users/' + id);
+        }
 
 
+ActivatedRoute is used for routing for each component
 
+To navigate one level up in the url:
+this.router.navigate(['..', 'list']);
 
-            
 Resources:
 material.angular.io
