@@ -206,6 +206,106 @@
     -> Add RouterModule to users.module.ts
     ->
         
+#18 Adding in addUserForm:
 
+    -> update add-user.component.ts
+        import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+        addUserForm: FormGroup = new FormGroup({});
+        constructor(private formBuilder: FormBuilder) { }
+
+        ngOnInit(): void {
+            this.addUserForm = this.formBuilder.group({
+            'username': new FormControl(''),
+            'email': new FormControl(''),
+            'phone': new FormControl('')
+            })
+        }
+
+    -> add-user.component.html:
+        <mat-card>
+            <mat-card-title>Create New User</mat-card-title>
+            <mat-card-content>
+                <form [formGroup]="addUserForm" (submit)="createUser()">
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Username</mat-label>
+                            <input matInput placeholder="Username" formControlName="username">
+                            <mat-icon matSuffix>Sentiment_very_satisfied</mat-icon>
+                            <mat-hint>Enter Username</mat-hint>
+                        </mat-form-field>
+                    </p>
+
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Email Address</mat-label>
+                            <input matInput placeholder="Email Address" formControlName="email">
+                            <mat-icon matSuffix>Sentiment_very_satisfied</mat-icon>
+                            <mat-hint>Enter Email</mat-hint>
+                        </mat-form-field>
+                    </p>
+
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Phone Number</mat-label>
+                            <input matInput placeholder="Phone Number" formControlName="phone">
+                            <mat-icon matSuffix>Sentiment_very_satisfied</mat-icon>
+                            <mat-hint>Enter Phone Number</mat-hint>
+                        </mat-form-field>
+                    </p>
+                    
+                    <p>
+                        <button mat-raised-button color="primary">Submit</button>
+                    </p>
+                </form>
+            </mat-card-content>
+        </mat-card>
+
+    ->Add material components to user.module.ts
+        import { MatFormFieldModule} from '@angular/material/form-field';
+        import {MatInputModule} from '@angular/material/input';
+        import {MatIconModule} from '@angular/material/icon'; 
+    -> in imports=[]
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+
+    -> NEED TO ADD IN import { ReactiveFormsModule } from '@angular/forms'; to user.modules.ts or their will be a issue trying to use formGroup in a form
+        import { ReactiveFormsModule } from '@angular/forms';
+        imports: [ ReactiveFormsModule]
+
+#19 update user.service.ts
+    ->  addUser(userObj: any) {
+        return this.http.post(this.baseUrl + 'users', userObj);
+         }
+
+    -> add to user.module.ts
+        import {MatSnackBarModule} from '@angular/material/snack-bar'; 
+
+    -> add to add-user-component.ts
+        import {MatSnackBarModule} from '@angular/material/snack-bar'; 
+          constructor(private formBuilder: FormBuilder, 
+            private userService: UserService, private _snackbar: MatSnackBar ) { }
+        
+        createUser() {
+            this.userService.addUser(this.addUserForm.value).subscribe(data => {
+            this._snackbar.open("User Created Successfully");
+            }, err => {
+            this._snackbar.open("Unable to create User");
+            })
+        }
+
+    -> to get message to close:
+        ->user.modules.ts:
+        import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar'; 
+            ,
+            providers: [
+                { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500} }
+            ]
+
+
+
+
+
+            
 Resources:
 material.angular.io

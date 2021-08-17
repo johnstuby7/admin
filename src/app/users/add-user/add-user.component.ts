@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ɵɵsetComponentScope } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-add-user',
@@ -7,9 +10,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AddUserComponent implements OnInit {
 
-  constructor() { }
+  addUserForm: FormGroup = new FormGroup({});
+  constructor(private formBuilder: FormBuilder, 
+    private userService: UserService, private _snackbar: MatSnackBar ) { }
 
   ngOnInit(): void {
+    this.addUserForm = this.formBuilder.group({
+      'username': new FormControl(''),
+      'email': new FormControl(''),
+      'phone': new FormControl('')
+    })
+  }
+
+  createUser() {
+    this.userService.addUser(this.addUserForm.value).subscribe(data => {
+      this._snackbar.open("User Created Successfully");
+    }, err => {
+      this._snackbar.open("Unable to create User");
+    })
   }
 
 }
